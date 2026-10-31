@@ -1,0 +1,18 @@
+id = "rok"
+name = "Rok"
+version = "0.1.0"
+schema_version = 1
+authors = ["Han Damin <miniex@daminstudio.net>"]
+description = "Rok language support: tree-sitter highlighting for .rok and .rokon, and the rokls language server."
+repository = "https://github.com/rok-lang/rok.zed"
+
+[grammars.rok]
+repository = "https://github.com/rok-lang/rok-syntax"
+rev = "3b4b6bac4ae02cd36b624927721fbdfdad7e8896"
+path = "tree-sitter/rok"
+
+[grammars.rokon]
+repository = "https://github.com/rok-lang/rok-syntax"
+rev = "3b4b6bac4ae02cd36b624927721fbdfdad7e8896"
+path = "tree-sitter/rokon"
+

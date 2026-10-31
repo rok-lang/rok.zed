@@ -1,0 +1,47 @@
+#!/bin/sh
+# Compiles every query in languages/ against the rok-syntax grammars and
+# runs it over rok-syntax's corpus, so a wrong node, field or predicate
+# fails here and not in Zed.
+#
+#   scripts/check-queries DIR    DIR is a rok-syntax checkout at rok-syntax.rev
+#
+# Uses $TREE_SITTER, else DIR/node_modules/.bin/tree-sitter, else
+# tree-sitter on PATH.
+set -eu
+
+[ $# -eq 1 ] || { echo "usage: scripts/check-queries DIR" >&2; exit 2; }
+root=$(cd "$(dirname "$0")/.." && pwd)
+syntax=$(cd "$1" && pwd)
+
+rev=$(cat "$root/rok-syntax.rev")
+head=$(git -C "$syntax" rev-parse HEAD)
+[ "$head" = "$rev" ] || echo "warning: $syntax is at $head, rok-syntax.rev is $rev"
+
+ts=${TREE_SITTER:-}
+if [ -z "$ts" ]; then
+	if [ -x "$syntax/node_modules/.bin/tree-sitter" ]; then
+		ts=$syntax/node_modules/.bin/tree-sitter
+	else
+		ts=tree-sitter
+	fi
+fi
+
+status=0
+for lang in rok rokon; do
+	set -- "$syntax"/corpus/*."$lang" "$syntax"/tree-sitter/"$lang"/test/highlight/*."$lang"
+	files=
+	for f; do [ -f "$f" ] && files="$files $f"; done
+	for q in "$root"/languages/"$lang"/*.scm; do
+		name=languages/$lang/$(basename "$q")
+		# shellcheck disable=SC2086
+		if out=$("$ts" query -p "$syntax/tree-sitter/$lang" "$q" $files 2>&1); then
+			n=$(printf '%s\n' "$out" | grep -a -c 'capture:' || true)
+			echo "ok   $name ($n captures)"
+		else
+			echo "FAIL $name"
+			printf '%s\n' "$out" | sed 's/^/     /'
+			status=1
+		fi
+	done
+done
+exit $status
