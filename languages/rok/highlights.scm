@@ -17,9 +17,9 @@
 [
   "+" "-" "*" "/" "%" "%%" "==" "!=" "<" ">" "<=" ">=" "&&" "||" "!" "&" "|" "^"
   "~" "<<" ">>" "=" "+=" "-=" "*=" "/=" "%=" "%%=" "&=" "|=" "^=" "<<=" ">>="
-  ".." "..=" "?" "?." "??" "->" "=>" "..." "**"
+  ".." "..=" "?" "?." "??" "->" "=>" "..." "**" "**="
   ".+" ".-" ".*" "./" ".%" ".%%" ".==" ".!=" ".<" ".>" ".<=" ".>=" ".&&" ".||"
-  ".&" ".|" ".^" ".<<" ".>>"
+  ".&" ".|" ".^" ".<<" ".>>" ".**" ".??" ".=" ".+=" ".-=" ".*=" "./=" ".%=" ".**="
   "×" "⋅" "÷" "∘" "√" "≡" "≠" "≤" "≥" "∈" "∉" "⊂" "⊆" "∪" "∩"
   (operator)
 ] @operator
@@ -68,12 +68,14 @@
   "let"
   "using"
   "any"
+  "some"
 ] @keyword
 
 [
   "as"
   "is"
   "in"
+  "!in"
   "where"
 ] @keyword
 
@@ -333,6 +335,37 @@
 
 (closure_parameter
   pattern: (identifier) @variable.parameter)
+
+; `(a, b): (i32, i32)`, `P { x, y }: P`, `|(k, v)|`: the names bound.
+(parameter
+  pattern: (tuple_pattern
+    (identifier) @variable.parameter))
+
+(closure_parameter
+  pattern: (tuple_pattern
+    (identifier) @variable.parameter))
+
+(parameter
+  pattern: (struct_pattern
+    (field_pattern
+      name: (field_identifier) @variable.parameter
+      !pattern)))
+
+(closure_parameter
+  pattern: (struct_pattern
+    (field_pattern
+      name: (field_identifier) @variable.parameter
+      !pattern)))
+
+(parameter
+  pattern: (struct_pattern
+    (field_pattern
+      pattern: (identifier) @variable.parameter)))
+
+(closure_parameter
+  pattern: (struct_pattern
+    (field_pattern
+      pattern: (identifier) @variable.parameter)))
 
 (named_argument
   name: (field_identifier) @variable.parameter)

@@ -8,7 +8,7 @@ repository = "https://github.com/rok-lang/rok.zed"
 
 [grammars.rok]
 repository = "https://github.com/rok-lang/rok-syntax"
-rev = "38cc3d85baf90e054d38d7275625c967c2ffb7c3"
+rev = "d5b12ec6c30381428e49f6964cc3398fdde84e20"
 path = "tree-sitter/rok"
 
 [grammars.rokon]
