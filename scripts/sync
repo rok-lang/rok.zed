@@ -117,9 +117,13 @@ for lang in rok rokon; do
 	} >"$tmp/languages/$lang/injections.scm"
 done
 
-# rev = "..." under [grammars.rok] and [grammars.rokon].
-sed -E "/^\[grammars\./,/^\[/ s/^rev = \".*\"$/rev = \"$rev\"/" \
-	"$root/extension.toml" >"$tmp/extension.toml"
+# rev = "..." under every [grammars.*] table. A sed range would end on the
+# next table's header and skip that table.
+awk -v rev="$rev" '
+	/^\[/ { in_grammar = ($0 ~ /^\[grammars\./) }
+	in_grammar && /^rev = "/ { print "rev = \"" rev "\""; next }
+	{ print }
+' "$root/extension.toml" >"$tmp/extension.toml"
 
 if [ -n "$check" ]; then
 	status=0
