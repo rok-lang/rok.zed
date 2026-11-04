@@ -40,7 +40,8 @@ Zed fetches and builds the grammars at the commit in `extension.toml`.
 
 ## Language server
 
-Install Rok so `rokls` is on your `PATH`.
+Install Rok 0.2 or later so `rokls` is on your `PATH`; Rok 0.1 is no
+longer supported.
 
 Linux and macOS:
 
